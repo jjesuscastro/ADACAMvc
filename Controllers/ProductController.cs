@@ -8,9 +8,8 @@ namespace ProductMVC.Controllers;
 
 public class ProductController : Controller
 {
-    // 
-    // GET: /HelloWorld/
 
+    //Base URL to the API
     string BaseURL = "http://localhost:5292";
     public async Task<ActionResult> Index()
     {
@@ -25,16 +24,17 @@ public class ProductController : Controller
 
             if (Res.IsSuccessStatusCode)
             {
-                //Storing the response details recieved from web api
                 var ProdResponse = Res.Content.ReadAsStringAsync().Result;
-                //Deserializing the response recieved from web api and storing into the Employee list
                 products = JsonConvert.DeserializeObject<List<Product>>(ProdResponse);
             }
-            //returning the employee list to view
             return View(products);
         }
     }
 
+    /// <summary>
+    /// This method gets 1 product from the API with the given id
+    /// </summary>
+    /// <param name="id">the id of the product.</param>
     public async Task<ActionResult> Details(int id)
     {
         Product product = new Product();
@@ -48,9 +48,7 @@ public class ProductController : Controller
 
             if (Res.IsSuccessStatusCode)
             {
-                //Storing the response details recieved from web api
                 var ProdResponse = Res.Content.ReadAsStringAsync().Result;
-                //Deserializing the response recieved from web api and storing into the Employee list
                 product = JsonConvert.DeserializeObject<Product>(ProdResponse);
             }
 
@@ -58,6 +56,10 @@ public class ProductController : Controller
         }
     }
 
+    /// <summary>
+    /// This method deletes 1 product from the API with the given id
+    /// </summary>
+    /// <param name="id">the id of the product.</param>
     public async Task<ActionResult> Delete(int id)
     {
         using (var client = new HttpClient())
@@ -69,7 +71,6 @@ public class ProductController : Controller
 
             if (Res.IsSuccessStatusCode)
             {
-                //Storing the response details recieved from web api
                 var ProdResponse = Res.Content.ReadAsStringAsync().Result;
             }
 
@@ -82,6 +83,10 @@ public class ProductController : Controller
         return View();
     }
 
+    /// <summary>
+    /// This method creates 1 product from the API, called by the View
+    /// </summary>
+    /// <param name="product">product object to be created.</param>
     [HttpPost]
     public ActionResult Create(Product product)
     {
@@ -90,7 +95,6 @@ public class ProductController : Controller
             product.Id = 0;
             client.BaseAddress = new Uri($"{BaseURL}/products");
 
-            //HTTP POST
             var postTask = client.PostAsJsonAsync<Product>("products", product);
             postTask.Wait();
 
@@ -106,6 +110,10 @@ public class ProductController : Controller
         return View(product);
     }
 
+    /// <summary>
+    /// This method gets 1 product from the API then opens Update View
+    /// </summary>
+    /// <param name="id">product id  to be updated.</param>
     public async Task<ActionResult> Update(int id)
     {
         Product product = new Product();
@@ -119,9 +127,7 @@ public class ProductController : Controller
 
             if (Res.IsSuccessStatusCode)
             {
-                //Storing the response details recieved from web api
                 var ProdResponse = Res.Content.ReadAsStringAsync().Result;
-                //Deserializing the response recieved from web api and storing into the Employee list
                 product = JsonConvert.DeserializeObject<Product>(ProdResponse);
             }
 
@@ -129,6 +135,10 @@ public class ProductController : Controller
         }
     }
 
+    /// <summary>
+    /// This method updates 1 product from the API
+    /// </summary>
+    /// <param name="product">product object to be updated.</param>
     [HttpPost]
     public ActionResult Update(Product product)
     {
